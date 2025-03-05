@@ -1,0 +1,68 @@
+openapi: 3.0.0
+info:
+  title: HRMS API
+  version: 1.0.0
+paths:
+  /api/users:
+    get:
+      summary: Get all users
+      responses:
+        '200':
+          description: A list of users
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                email: { type: string }
+                password: { type: string }
+                role: { type: string }
+      responses:
+        '201':
+          description: User created
+  /api/leaves/apply:
+    post:
+      summary: Apply for leave
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId: { type: string }
+                leaveType: { type: string }
+                startDate: { type: string, format: date }
+                endDate: { type: string, format: date }
+                reason: { type: string }
+      responses:
+        '201':
+          description: Leave applied
+  /api/leaves/{id}/approve:
+    post:
+      summary: Approve or reject a leave
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                approved: { type: boolean }
+                comments: { type: string }
+                managerRole: { type: string }
+                managerId: { type: string }
+      responses:
+        '200':
+          description: Leave updated
