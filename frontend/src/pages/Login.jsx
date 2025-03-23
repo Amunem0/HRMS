@@ -11,7 +11,8 @@ function Login() {
     e.preventDefault();
     try {
       const res = await axios.post('http://localhost:5000/api/users/login', { email, password });
-      // Store user info in localStorage (as JSON)
+      // Save token and user info in localStorage
+      localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
       navigate('/');
     } catch (error) {
@@ -29,14 +30,14 @@ function Login() {
           placeholder="Email" 
           className="border p-2 w-full mb-4" 
           value={email} 
-          onChange={(e) => setEmail(e.target.value)} 
+          onChange={(e)=>setEmail(e.target.value)} 
         />
         <input 
           type="password" 
           placeholder="Password" 
           className="border p-2 w-full mb-4" 
           value={password} 
-          onChange={(e) => setPassword(e.target.value)} 
+          onChange={(e)=>setPassword(e.target.value)} 
         />
         <button type="submit" className="bg-blue-500 text-white p-2 rounded w-full">Login</button>
       </form>

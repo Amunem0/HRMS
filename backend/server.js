@@ -8,6 +8,7 @@ dotenv.config();
 const userRoutes = require('./routes/userRoutes');
 const attendanceRoutes = require('./routes/attendanceRoutes');
 const leaveRoutes = require('./routes/leaveRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
 
 const app = express();
 
@@ -23,7 +24,10 @@ app.use('/api/users', userRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/leaves', leaveRoutes);
 
-// Sample Dashboard Route (customize as needed)
+app.use('/api/dashboard', dashboardRoutes);
+
+
+// Sample Dashboard Route (you can update this with aggregation logic later)
 app.get('/api/dashboard', (req, res) => {
   res.json({
     attendanceCount: 100,

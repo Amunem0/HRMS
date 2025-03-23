@@ -4,12 +4,9 @@ const Leave = require('../models/Leave');
 exports.applyLeave = async (req, res) => {
   try {
     const { userId, leaveType, startDate, endDate, reason } = req.body;
-
-    // Optional: Validate required fields
     if (!userId || !leaveType || !startDate || !endDate) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
-
     const leave = await Leave.create({
       userId,
       leaveType,
@@ -23,26 +20,20 @@ exports.applyLeave = async (req, res) => {
   }
 };
 
-// Manager approves or rejects leave (dummy check for manager role)
+// Manager approves or rejects leave using JWT role
 exports.approveLeave = async (req, res) => {
   try {
-    // Simulate manager check by requiring "managerRole" in request body
-    if (req.body.managerRole !== 'Manager') {
+    // req.user is set by the protect middleware and includes role and id
+    if (req.user.role !== 'Manager') {
       return res.status(403).json({ error: 'Access denied. Only managers can approve leaves.' });
     }
-
     const leave = await Leave.findById(req.params.id);
     if (!leave) {
       return res.status(404).json({ error: 'Leave request not found' });
     }
-
-    const { approved, comments, managerId } = req.body;
-    if (!managerId) {
-      return res.status(400).json({ error: 'managerId is required for approval' });
-    }
-
+    const { approved, comments } = req.body;
     leave.status = approved ? 'Approved' : 'Rejected';
-    leave.approvedBy = managerId; // Expect managerId to be provided
+    leave.approvedBy = req.user.id; // Use manager's id from the JWT
     leave.comments = comments;
     await leave.save();
     res.json(leave);
